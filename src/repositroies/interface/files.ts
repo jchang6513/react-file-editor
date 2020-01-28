@@ -6,6 +6,7 @@ export type Dir = {
 };
 
 export type File = {
+  id?: number;
   fileName: string;
   content: string;
 };

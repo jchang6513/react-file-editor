@@ -14,9 +14,13 @@ export class FilesRepository implements Files.Repository {
   }
 
   create(file: File, callbacks: Callbacks<File>) {
-    const { fileName } = file;
+    const id = new Date().getTime();
+    const newFile = {
+      ...file,
+      id
+    };
     try {
-      this.localStorageAPI.createWithObject(fileName, file);
+      this.localStorageAPI.createWithObject(String(id), newFile);
       callbacks.onSuccess(file);
     } catch(e) {
       callbacks.onError(e)

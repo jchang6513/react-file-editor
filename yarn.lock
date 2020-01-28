@@ -1453,6 +1453,11 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
+"@types/mockdate@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/mockdate/-/mockdate-2.0.0.tgz#aaf388a1ead3b0f5ed6dc1611956ea7b40a57d3c"
+  integrity sha1-qvOIoerTsPXtbcFhGVbqe0ClfTw=
+
 "@types/node@*":
   version "12.12.14"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.14.tgz#1c1d6e3c75dba466e0326948d56e8bd72a1903d2"
@@ -6728,6 +6733,11 @@ mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+mockdate@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/mockdate/-/mockdate-2.0.5.tgz#70c6abf9ed4b2dae65c81dfc170dd1a5cec53620"
+  integrity sha512-ST0PnThzWKcgSLyc+ugLVql45PvESt3Ul/wrdV/OPc/6Pr8dbLAIJsN1cIp41FLzbN+srVTNIRn+5Cju0nyV6A==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
