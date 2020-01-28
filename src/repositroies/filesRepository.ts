@@ -15,6 +15,7 @@ export class FilesRepository implements Files.Repository {
 
   create(file: File, callbacks: Callbacks<File>) {
     const id = new Date().getTime();
+    const sId = String(id);
     const newFile = {
       ...file,
       id
@@ -28,7 +29,13 @@ export class FilesRepository implements Files.Repository {
   }
 
   get(id: number, callbacks: Callbacks<File>) {
-
+    const sId = String(id);
+    try {
+      const file = this.localStorageAPI.getFromObject(sId) as File;
+      callbacks.onSuccess(file);
+    } catch(e) {
+      callbacks.onError(e);
+    }
   }
 
   update(id: number, object: File, callbacks: Callbacks<File>) {

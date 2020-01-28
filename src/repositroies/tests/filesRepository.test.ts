@@ -9,14 +9,21 @@ jest.mock('../../api/localStorageAPI');
 const api = new LocalStorageAPI();
 const repo = new FilesRepository(api);
 
-let testError: Error;
+let error: Error;
+let file: File;
 const fileCallbacks: Callbacks<File> = {
-  onSuccess: jest.fn(() => {}),
-  onError: jest.fn((e) => { testError = e; }),
+  onSuccess: jest.fn((f) => { file = f; }),
+  onError: jest.fn((e) => { error = e; }),
 };
-const testFile: File = {
+const testNewFile: File = {
   fileName: 'new file',
   content: "const foo = 'foo'",
+};
+const testFileId = new Date('2020-01-01 00:00').getTime();
+const testFile: File = {
+  id: testFileId,
+  fileName: 'old file',
+  content: "const goo = 'goo'",
 };
 
 const fakeDate = '2020-01-28 12:34';
@@ -32,34 +39,64 @@ describe('FileRepository', () => {
   describe('create file', () => {
     it('execute create with object', () => {
       const id = new Date('2020-01-28 12:34').getTime();
-      repo.create(testFile, fileCallbacks);
+      repo.create(testNewFile, fileCallbacks);
       // execute with filename and file object
       expect(api.createWithObject).toBeCalledTimes(1);
       expect(api.createWithObject).toBeCalledWith(
         String(id),
         {
           id,
-          ...testFile,
+          ...testNewFile,
         }
       );
     });
-    it('create with object on success', () => {
+    it('create with object successfully', () => {
       (api.createWithObject as jest.Mock).mockImplementation(() => {})
-      repo.create(testFile, fileCallbacks);
+      repo.create(testNewFile, fileCallbacks);
 
       // execute on success callback
       expect(fileCallbacks.onSuccess).toBeCalled();
       expect(fileCallbacks.onError).not.toBeCalled();
     });
-    it('create with object on success', () => {
+    it('create with object failed', () => {
+      const testError = new Error('test');
       (api.createWithObject as jest.Mock).mockImplementation(() => {
-        throw new Error('test');
+        throw testError;
       })
-      repo.create(testFile, fileCallbacks);
+      repo.create(testNewFile, fileCallbacks);
 
       // execute on success callback
       expect(fileCallbacks.onSuccess).not.toBeCalled();
       expect(fileCallbacks.onError).toBeCalled();
+      expect(error).toEqual(testError);
+    });
+  });
+
+  describe('get file', () => {
+    it('execute get from object', () => {
+      repo.get(testFileId, fileCallbacks);
+      // execute with filename and file object
+      expect(api.getFromObject).toBeCalledTimes(1);
+      expect(api.getFromObject).toBeCalledWith(String(testFileId));
+    });
+    it('execute get from object successfully', () => {
+      (api.getFromObject as jest.Mock).mockReturnValue(testFile);
+      repo.get(testFileId, fileCallbacks);
+      // execute on success callback and get file
+      expect(fileCallbacks.onSuccess).toBeCalled();
+      expect(file).toEqual(testFile);
+    });
+    it('get from object failed', () => {
+      const testError = new Error('get file failed');
+      (api.getFromObject as jest.Mock).mockImplementation(() => {
+        throw testError;
+      })
+      repo.get(testFileId, fileCallbacks);
+
+      // execute on success callback
+      expect(fileCallbacks.onSuccess).not.toBeCalled();
+      expect(fileCallbacks.onError).toBeCalled();
+      expect(error).toEqual(testError);
     });
   });
 });
