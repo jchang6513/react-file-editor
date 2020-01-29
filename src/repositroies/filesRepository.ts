@@ -38,8 +38,14 @@ export class FilesRepository implements Files.Repository {
     }
   }
 
-  update(id: number, object: File, callbacks: Callbacks<File>) {
-
+  update(id: number, file: File, callbacks: Callbacks<File>) {
+    const sId = String(id);
+    try {
+      this.localStorageAPI.updateWithObject(sId, file);
+      callbacks.onSuccess(file);
+    } catch(e) {
+      callbacks.onError(e);
+    }
   }
 
   delete(id: number, callbacks: Callbacks<File>) {

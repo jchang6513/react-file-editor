@@ -99,4 +99,32 @@ describe('FileRepository', () => {
       expect(error).toEqual(testError);
     });
   });
+
+  describe('update file', () => {
+    it('execute update with object', () => {
+      repo.update(testFileId, testFile, fileCallbacks);
+      // execute with filename and file object
+      expect(api.updateWithObject).toBeCalledTimes(1);
+      expect(api.updateWithObject).toBeCalledWith(String(testFileId), testFile);
+    });
+    it('execute update with object successfully', () => {
+      repo.update(testFileId, testFile, fileCallbacks);
+      // execute on success callback and get file
+      expect(fileCallbacks.onSuccess).toBeCalled();
+      expect(fileCallbacks.onError).not.toBeCalled();
+      expect(file).toEqual(testFile);
+    });
+    it('update with object failed', () => {
+      const testError = new Error('get file failed');
+      (api.updateWithObject as jest.Mock).mockImplementation(() => {
+        throw testError;
+      })
+      repo.update(testFileId, testFile, fileCallbacks);
+
+      // execute on success callback
+      expect(fileCallbacks.onSuccess).not.toBeCalled();
+      expect(fileCallbacks.onError).toBeCalled();
+      expect(error).toEqual(testError);
+    });
+  });
 });
