@@ -11,10 +11,15 @@ const repo = new FilesRepository(api);
 
 let error: Error;
 let file: File;
+const voidCallbacks: Callbacks<void> = {
+  onSuccess: jest.fn(() => {} ),
+  onError: jest.fn((e) => { error = e; }),
+};
 const fileCallbacks: Callbacks<File> = {
   onSuccess: jest.fn((f) => { file = f; }),
   onError: jest.fn((e) => { error = e; }),
 };
+
 const testNewFile: File = {
   fileName: 'new file',
   content: "const foo = 'foo'",
@@ -79,7 +84,7 @@ describe('FileRepository', () => {
       expect(api.getFromObject).toBeCalledTimes(1);
       expect(api.getFromObject).toBeCalledWith(String(testFileId));
     });
-    it('execute get from object successfully', () => {
+    it('get from object successfully', () => {
       (api.getFromObject as jest.Mock).mockReturnValue(testFile);
       repo.get(testFileId, fileCallbacks);
       // execute on success callback and get file
@@ -107,7 +112,7 @@ describe('FileRepository', () => {
       expect(api.updateWithObject).toBeCalledTimes(1);
       expect(api.updateWithObject).toBeCalledWith(String(testFileId), testFile);
     });
-    it('execute update with object successfully', () => {
+    it('update with object successfully', () => {
       repo.update(testFileId, testFile, fileCallbacks);
       // execute on success callback and get file
       expect(fileCallbacks.onSuccess).toBeCalled();
@@ -124,6 +129,33 @@ describe('FileRepository', () => {
       // execute on success callback
       expect(fileCallbacks.onSuccess).not.toBeCalled();
       expect(fileCallbacks.onError).toBeCalled();
+      expect(error).toEqual(testError);
+    });
+  });
+  describe('delete file', () => {
+    it('execute delete', () => {
+      repo.delete(testFileId, voidCallbacks);
+      // execute with filename and file object
+      expect(api.delete).toBeCalledTimes(1);
+      expect(api.delete).toBeCalledWith(String(testFileId));
+    });
+    it('delete successfully', () => {
+      repo.delete(testFileId, voidCallbacks);
+      // execute on success callback and get file
+      expect(voidCallbacks.onSuccess).toBeCalled();
+      expect(voidCallbacks.onError).not.toBeCalled();
+      expect(file).toEqual(testFile);
+    });
+    it('delete failed', () => {
+      const testError = new Error('get file failed');
+      (api.delete as jest.Mock).mockImplementation(() => {
+        throw testError;
+      })
+      repo.delete(testFileId, voidCallbacks);
+
+      // execute on success callback
+      expect(voidCallbacks.onSuccess).not.toBeCalled();
+      expect(voidCallbacks.onError).toBeCalled();
       expect(error).toEqual(testError);
     });
   });

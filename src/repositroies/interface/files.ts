@@ -12,7 +12,8 @@ export type File = {
 };
 
 export namespace Files {
-  export interface Repository extends BaseRepository<File> {
+  export interface Repository extends Omit<BaseRepository<File>, 'delete'> {
     listDirectories: (dir: string, callbacks: Callbacks<Dir>) => void;
+    delete: (id: number, callbacks: Callbacks<void>) => void;
   }
 }

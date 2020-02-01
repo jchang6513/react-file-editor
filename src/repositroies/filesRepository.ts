@@ -48,7 +48,13 @@ export class FilesRepository implements Files.Repository {
     }
   }
 
-  delete(id: number, callbacks: Callbacks<File>) {
-
+  delete(id: number, callbacks: Callbacks<void>) {
+    const sId = String(id);
+    try {
+      this.localStorageAPI.delete(sId);
+      callbacks.onSuccess();
+    } catch(e) {
+      callbacks.onError(e);
+    }
   }
 }
