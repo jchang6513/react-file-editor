@@ -1,7 +1,7 @@
 import MockDate from 'mockdate';
 import { FilesRepository } from "../filesRepository";
 import { LocalStorageAPI } from "../../api/localStorageAPI";
-import { File, Dir } from "../interface/files";
+import { File } from "../filesRepository";
 import { Callbacks } from "../base/repositoryCallbacks";
 
 jest.mock('../../api/localStorageAPI');
